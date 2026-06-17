@@ -11,15 +11,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy via SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASS }}
-          port: 22
-          local_path: './*'
-          remote_path: /domains/dramaluvieira.com.br/public_html/
-          sftp_only: true
-          delete_remote_files: false
-          args: '-o StrictHostKeyChecking=no'
+      - name: Deploy via FTPS (lftp)
+        run: |
+          sudo apt-get install -y lftp
+          lftp -e "
+            set ssl:verify-certificate no;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set net:timeout 30;
+            set net:max-retries 5;
+            set net:reconnect-interval-base 5;
+            open ftp://${{ secrets.FTP_USER }}:${{ secrets.FTP_PASS }}@${{ secrets.FTP_HOST }};
+            mirror -R --only-newer --no-perms --parallel=4 --exclude .git --exclude .github --exclude node_modules . /domains/dramaluvieira.com.br/public_html/;
+            quit
+          "
