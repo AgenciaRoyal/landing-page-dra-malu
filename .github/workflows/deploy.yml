@@ -11,13 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy via FTP
+      - name: Deploy via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
           port: 21
+          protocol: ftps
           server-dir: /public_html/
           exclude: |
             **/.git*
