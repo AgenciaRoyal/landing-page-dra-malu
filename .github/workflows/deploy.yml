@@ -11,17 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Deploy via FTPS
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Deploy via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
           server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
-          port: 21
-          protocol: ftps
-          server-dir: /domains/dramaluvieira.com.br/public_html/
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/.github/**
+          port: 22
+          local_path: './*'
+          remote_path: /domains/dramaluvieira.com.br/public_html/
+          sftp_only: true
+          delete_remote_files: false
+          args: '-o StrictHostKeyChecking=no'
