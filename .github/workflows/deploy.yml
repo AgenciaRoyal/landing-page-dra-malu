@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.FTP_PASS }}
           port: 21
           protocol: ftps
-          server-dir: /public_html/
+          server-dir: /domains/dramaluvieira.com.br/public_html/
           exclude: |
             **/.git*
             **/.git*/**
