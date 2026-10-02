@@ -668,8 +668,23 @@ function playVideo() {
   v.play();
 }
 
+// Rastreamento de cliques no WhatsApp (GA4)
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href*="wa.me"]');
+  if (!a) return;
+  const sec = a.closest('section');
+  const local = a.classList.contains('wa') ? 'flutuante'
+    : a.closest('#mob') ? 'menu_mobile'
+    : a.closest('.tb') ? 'barra_topo'
+    : a.closest('header') ? 'menu'
+    : a.closest('footer') ? 'rodape'
+    : sec ? (sec.id || [...sec.classList].find(c => c !== 'S') || 'secao')
+    : 'outro';
+  gtag('event', 'whatsapp_click', { local_botao: local, link_url: a.href });
+});
+
 // Scroll reveal
-const io = new IntersectionObserver(es => es.forEach(e => {
+const io =new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); }
 }), {threshold: 0.1});
 document.querySelectorAll('.rv,.rvs').forEach(el => io.observe(el));
